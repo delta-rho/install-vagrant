@@ -11,7 +11,7 @@ Download and install Vagrant: http://www.vagrantup.com/downloads.html
 On a command line, clone this repository:
 
 ````
-https://github.com/tesseradata/install-vagrant
+git clone https://github.com/tesseradata/install-vagrant
 ````
 
 Choose the directory in this repository with the environment you would like, for example
