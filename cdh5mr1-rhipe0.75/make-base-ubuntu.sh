@@ -56,7 +56,7 @@ sudo ldconfig
 cd ..
 
 #### install Rhipe
-# wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.0_cdh5mr1.tar.gz
+wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.0_cdh5mr1.tar.gz
 sudo R CMD INSTALL Rhipe_0.75.0_cdh5mr1.tar.gz
 
 ## devtools
