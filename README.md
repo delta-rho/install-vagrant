@@ -11,7 +11,7 @@ Download and install Vagrant: http://www.vagrantup.com/downloads.html
 On a command line, clone this repository:
 
 ````
-https://github.com/tesseradata/install-vagrant
+git clone https://github.com/tesseradata/install-vagrant
 ````
 
 Choose the directory in this repository with the environment you would like, for example
@@ -31,5 +31,5 @@ vagrant up
 Once the provisioning has completed
 
 * To work from command line: SSH into the machine with `vagrant ssh`
-* To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant
+* To work from RStudio IDE: navigate to `localhost:9787` in your web browser with credentials vagrant:vagrant
 
