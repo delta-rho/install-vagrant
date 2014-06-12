@@ -120,7 +120,10 @@ sudo echo export HADOOP_BIN=$HADOOP_BIN | sudo tee -a /etc/profile
 sudo echo export HADOOP_LIBS=$HADOOP_LIBS | sudo tee -a /etc/profile
 sudo echo export HADOOP_CONF_DIR=$HADOOP_CONF_DIR | sudo tee -a /etc/profile
 
-echo "HADOOP_CONF_DIR=/etc/hadoop/conf
+
+tee ~/.Renviron <<EOF
+HADOOP_CONF_DIR=/etc/hadoop/conf
 HADOOP_LIBS=/etc/hadoop/conf:/usr/lib/hadoop/lib/:/usr/lib/hadoop/.//:/usr/lib/hadoop-hdfs/./:/usr/lib/hadoop-hdfs/lib/:/usr/lib/hadoop-hdfs/.//:/usr/lib/hadoop-yarn/.//:/usr/lib/hadoop-0.20-mapreduce/./:/usr/lib/hadoop-0.20-mapreduce/lib/:/usr/lib/hadoop-0.20-mapreduce/.//
 HADOOP_BIN=/usr/lib/hadoop/bin
-HADOOP_HOME=/usr/lib/hadoop" | tee ~/.Renviron
+HADOOP_HOME=/usr/lib/hadoop
+EOF
