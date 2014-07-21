@@ -12,8 +12,12 @@ sudo -E apt-get --yes --force-yes install r-base-dev
 ## http://www.rstudio.com/ide/download/server
 sudo -E apt-get --yes --force-yes install gdebi-core
 sudo -E apt-get --yes --force-yes install libapparmor1
-wget http://download2.rstudio.org/rstudio-server-0.98.501-amd64.deb
-sudo gdebi --n rstudio-server-0.98.501-amd64.deb
+# wget http://download2.rstudio.org/rstudio-server-0.98.501-amd64.deb
+# sudo gdebi --n rstudio-server-0.98.501-amd64.deb
+# wget http://download2.rstudio.org/rstudio-server-0.98.507-amd64.deb
+# sudo gdebi --n rstudio-server-0.98.507-amd64.deb
+# wget https://s3.amazonaws.com/rstudio-dailybuilds/rstudio-server-0.98.920-amd64.deb
+# sudo gdebi --n rstudio-server-0.98.920-amd64.deb
 ## only want to start manually (as it will be installed in each node)
 # echo "manual" | sudo tee /etc/init/rstudio-server.override
 
@@ -120,10 +124,11 @@ sudo echo export HADOOP_BIN=$HADOOP_BIN | sudo tee -a /etc/profile
 sudo echo export HADOOP_LIBS=$HADOOP_LIBS | sudo tee -a /etc/profile
 sudo echo export HADOOP_CONF_DIR=$HADOOP_CONF_DIR | sudo tee -a /etc/profile
 
-
-tee ~/.Renviron <<EOF
+touch .Renviron
+sudo tee -a ~/.Renviron <<EOF
 HADOOP_CONF_DIR=/etc/hadoop/conf
 HADOOP_LIBS=/etc/hadoop/conf:/usr/lib/hadoop/lib/:/usr/lib/hadoop/.//:/usr/lib/hadoop-hdfs/./:/usr/lib/hadoop-hdfs/lib/:/usr/lib/hadoop-hdfs/.//:/usr/lib/hadoop-yarn/.//:/usr/lib/hadoop-0.20-mapreduce/./:/usr/lib/hadoop-0.20-mapreduce/lib/:/usr/lib/hadoop-0.20-mapreduce/.//
 HADOOP_BIN=/usr/lib/hadoop/bin
 HADOOP_HOME=/usr/lib/hadoop
 EOF
+
