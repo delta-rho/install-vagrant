@@ -38,6 +38,10 @@ sudo gdebi --n shiny-server-1.2.0.359-amd64.deb
 sudo mkdir /srv/shiny-server/examples
 sudo cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples
 sudo chown -R shiny:shiny /srv/shiny-server/examples
+sudo chmod 777 /srv/shiny-server
+
+## allow vagrant user to sudo chown
+echo "vagrant ALL=(ALL) NOPASSWD: /bin/chown -R shiny /srv/shiny-server" | sudo tee -a /etc/sudoers
 
 #### install datadr / trelliscope
 ## system dependencies
