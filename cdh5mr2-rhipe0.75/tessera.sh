@@ -1,4 +1,4 @@
-
+## configuration
 function eVal {
     echo $1 | tee -a /home/vagrant/.Renviron
     # echo $1 | tee -a /etc/R/Renviron
@@ -95,3 +95,11 @@ sudo -E R -e "options(unzip = 'unzip', repos = 'http://cran.rstudio.com/'); libr
 #sudo -E R -e "options(unzip = 'unzip',repos = 'http://cran.rstudio.com/'); library(devtools); install_github('example-vast-challenge', 'tesseradata', subdir = 'package', ref = 'gh-pages')"
 ## stl2
 #sudo -E R -e "options(unzip = 'unzip',repos = 'http://cran.rstudio.com/'); library(devtools); install_github('stl2', 'hafen')"
+
+echo "export LD_LIBRARY_PATH=/usr/local/lib" | sudo tee -a /home/vagrant/rhRunner.sh
+echo "exec /usr/bin/R CMD /usr/local/lib/R/site-library/Rhipe/bin/RhipeMapReduce --slave --silent --vanilla" | sudo tee -a /home/vagrant/rhRunner.sh
+
+sudo chown -R vagrant:vagrant /home/vagrant
+sudo chmod 755 /home/vagrant
+sudo chmod 755 /home/vagrant/rhRunner.sh
+
