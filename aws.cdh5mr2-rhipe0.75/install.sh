@@ -1,6 +1,6 @@
 #! /bin/sh
 
-cd /home/vagrant/
+cd /home/ubuntu/
 
 echo "Add Cloudera repositories"
 wget -c http://archive.cloudera.com/cdh5/one-click-install/precise/amd64/cdh5-repository_1.0_all.deb
@@ -44,9 +44,9 @@ sudo service hadoop-mapreduce-historyserver start
 
 echo "Create User Directories"
 sudo -u hdfs hadoop fs -mkdir /user
-sudo -u hdfs hadoop fs -chown vagrant /user
-sudo -u hdfs hadoop fs -mkdir /user/vagrant
-sudo -u hdfs hadoop fs -chown vagrant /user/vagrant
+sudo -u hdfs hadoop fs -chown ubuntu /user
+sudo -u hdfs hadoop fs -mkdir /user/ubuntu
+sudo -u hdfs hadoop fs -chown ubuntu /user/ubuntu
 
 echo "Install HiveServer2"
 sudo apt-get install --yes hive-server2
