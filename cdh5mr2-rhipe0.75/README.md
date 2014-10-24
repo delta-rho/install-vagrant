@@ -56,3 +56,6 @@ vagrant halt
 vagrant up
 ```
 
+## Bugs for chd5mr2 ##
+vagrant ssh does not work. Use ssh -i key user@hostname instead. 
+
