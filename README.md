@@ -56,4 +56,4 @@ Unless otherwise noted in the README file for a specific installation, the follo
 * TaskTracker: `http://localhost:60060`
 
 ## Bugs
-* `vagrant ssh` does not work with cdh5mr2-Rhipe0.75. Please do not use it. 
+* `vagrant ssh` does not work with cdh5mr2-Rhipe0.75. Please do not use it. See how to use SSH for cdh5mr2-Rhipe0.75 above.  
