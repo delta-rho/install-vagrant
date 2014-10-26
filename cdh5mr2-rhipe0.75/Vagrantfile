@@ -34,8 +34,8 @@ config.vm.provision(
 	sudo shutdown now -r;"
 )
 	config.vm.post_up_message="Tessera virtual machine has been provisioned...
-	'vagrant ssh' does not work with this specific script, please do not use it. Use 'ssh user@hostname' instead or 'ssh -i key user@hostname'
-	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following 'ssh -D 10009 -i key user@hostname'
+	'vagrant ssh' does not work with this specific script, please do not use it. Use 'ssh -i key ubuntu@hostname' or (if username is different than ubuntu) 'ssh -i key username@hostname'
+	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following 'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'
 	to access HTTP, RStudio, etc. Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop
 	job tracker open port 50030."
 
@@ -49,6 +49,7 @@ elsif ARGV[1].split("=")[1].downcase == "virtualbox"
   	config.vm.network :forwarded_port, guest: 3838, host: 4838
   	config.vm.network :forwarded_port, guest: 8088, host: 9088
   	config.vm.network :forwarded_port, guest: 80, host: 9787
+	config.vm.network :forwarded_port, guest: 22, host: 2202
 	config.vm.provider :virtualbox do |vb|
 		vb.memory = 4096
 		vb.cpus = 2
@@ -79,7 +80,7 @@ elsif ARGV[1].split("=")[1].downcase == "virtualbox"
     		:inline => "/vagrant/tessera.sh"
   	)
 	config.vm.post_up_message="Tessera virtual machine has been provisioned...
-	'vagrant ssh' does not work with this specific script, please do not use it. Use 'ssh user@hostname' instead or 'ssh -i key user@hostname'
+	'vagrant ssh' does not work with this specific script, please do not use it. Use 'ssh -p 2202 vagrant@localhost' or (if username is different than vagrant) 'ssh -p 2202 username@hostname'.
 	To work from RStudio IDE: navigate to 'localhost:8000' in your web browser with credentials vagrant:vagrant"
 
 
