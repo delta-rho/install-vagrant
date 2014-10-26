@@ -27,7 +27,12 @@ This will put you in an environment with CDH4 running MapReduce version 1 and wi
 To provision the environment, simply type the following:
 
 ````
-vagrant up
+vagrant up --provider=aws
+````
+for aws as the provider or for local virtualbox use,
+
+````
+vagrant up --provider=virtualbox
 ````
 
 Once the provisioning has completed
@@ -41,3 +46,5 @@ Unless otherwise noted in the README file for a specific installation, the follo
 * JobTracker: `http://localhost:60030`
 * TaskTracker: `http://localhost:60060`
 
+## Bugs
+* vagrant ssh does not work, please do not use it. 
