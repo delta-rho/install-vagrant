@@ -1,10 +1,26 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-Vagrant.require_plugin 'vagrant-aws'
-
+#Vagrant.require_plugin 'vagrant-aws'
+#puts RUBY_VERSION
 Vagrant.configure("2") do |config|
-if ARGV[1].split("=")[1].downcase == "aws"
 
+if ARGV.include? "--debug" then ARGV.delete("--debug") end
+case ARGV[0]
+	when "up"
+		if Dir.exists?("./.vagrant/machines/default") then require 'fileutils'; FileUtils.rm_rf("./.vagrant/machines/default") end
+		if ARGV.count < 2 then provider = "virtualbox"
+		else 
+			provider= ARGV[1].split("=")[1].downcase
+		end
+	when "ssh","halt","destroy"
+		if Dir.exists?("./.vagrant/machines/default/aws") then provider="aws"
+		elsif Dir.exists?("./.vagrant/machines/default/virtualbox") then provider = "virtualbox"
+		#add an elsif case for any other provider you would like to have. And follow it up with a provider specific config code. 
+		end
+end
+					
+if provider == "aws"
+	Vagrant.require_plugin 'vagrant-aws'
 	config.vm.synced_folder '.', '/vagrant', :disabled => true
 	config.vm.box = "dummy"
 	config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
@@ -34,22 +50,20 @@ config.vm.provision(
 	sudo shutdown now -r;"
 )
 	config.vm.post_up_message="Tessera virtual machine has been provisioned...
-	'vagrant ssh' does not work with this specific script, please do not use it. Use 'ssh -i key ubuntu@hostname' or (if username is different than ubuntu) 'ssh -i key username@hostname'
-	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following 'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'
-	to access HTTP, RStudio, etc. Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop
-	job tracker open port 50030."
+	use 'vagrant ssh' to connect to the machine. To	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following
+	'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'to access HTTP, RStudio, etc. 
+	Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop Namenode open port 50070."
 
-elsif ARGV[1].split("=")[1].downcase == "virtualbox"
+elsif provider == "virtualbox"
 	config.vm.box     = "precise64"
 	config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 	config.vm.network :forwarded_port, guest: 50070, host: 60070  
 	config.vm.network :forwarded_port, guest: 50075, host: 60075  
-  	config.vm.network :forwarded_port, guest: 50030, host: 60030
+ 	config.vm.network :forwarded_port, guest: 50030, host: 60030
   	config.vm.network :forwarded_port, guest: 50060, host: 60060
   	config.vm.network :forwarded_port, guest: 3838, host: 4838
   	config.vm.network :forwarded_port, guest: 8088, host: 9088
   	config.vm.network :forwarded_port, guest: 80, host: 9787
-	config.vm.network :forwarded_port, guest: 22, host: 2202
 	config.vm.provider :virtualbox do |vb|
 		vb.memory = 4096
 		vb.cpus = 2
@@ -80,9 +94,8 @@ elsif ARGV[1].split("=")[1].downcase == "virtualbox"
     		:inline => "/vagrant/tessera.sh"
   	)
 	config.vm.post_up_message="Tessera virtual machine has been provisioned...
-	'vagrant ssh' does not work with this specific script, please do not use it. Use 'ssh -p 2202 vagrant@localhost' or (if username is different than vagrant) 'ssh -p 2202 username@hostname'.
-	To work from RStudio IDE: navigate to 'localhost:8000' in your web browser with credentials vagrant:vagrant"
-
-
+	use 'vagrant ssh' to connect to the machine. To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant"
+#
+#elsif provider = anotherprovider
 end
 end
