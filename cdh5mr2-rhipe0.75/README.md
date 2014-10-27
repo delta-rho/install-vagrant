@@ -12,7 +12,7 @@ For yet unknown reasons, you need to halt and restart your vagrant VM to get Had
 
 ```
 vagrant halt
-vagrant up
+vagrant up --provider=aws or vagrant up --provider=virtualbox
 ```
 
 ### Hadoop URLs ###
@@ -53,7 +53,7 @@ See the notes above.  Basically, you need to do the following:
 
 ```
 vagrant halt
-vagrant up
+vagrant up --provider=aws or vagrant up --provider=virtualbox
 ```
 
 ## Bugs for chd5mr2 ##
