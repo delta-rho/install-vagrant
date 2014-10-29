@@ -8,11 +8,11 @@ provider = "virtualbox"
 ARGV.index do |s|
 	if s.include?("aws")
 		provider = "aws"
-		puts provider + "1"
+#		puts provider + "1"
 		break
 	elsif s.include?("virtualbox")
 		provider = "virtualbox"
-		puts provider + "2"
+#		puts provider + "2"
 		break
 #	elsif s.include?("anotherprovider")
 #		provider = "anotherprovider"
@@ -23,7 +23,7 @@ ARGV.index do |s|
 	end
 end
 
-puts provider + "4"
+#puts provider + "4"
 
 case provider
 when "aws"
