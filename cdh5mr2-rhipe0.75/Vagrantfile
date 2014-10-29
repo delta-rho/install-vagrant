@@ -1,31 +1,40 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-#Vagrant.require_plugin 'vagrant-aws'
-#puts RUBY_VERSION
+
 Vagrant.configure("2") do |config|
 
-if ARGV.include? "--debug" then ARGV.delete("--debug") end
-case ARGV[0]
-	when "up"
-		if Dir.exists?("./.vagrant/machines/default") then require 'fileutils'; FileUtils.rm_rf("./.vagrant/machines/default") end
-		if ARGV.count < 2 then provider = "virtualbox"
-		else 
-			provider= ARGV[1].split("=")[1].downcase
-		end
-	when "ssh","halt","destroy"
-		if Dir.exists?("./.vagrant/machines/default/aws") then provider="aws"
-		elsif Dir.exists?("./.vagrant/machines/default/virtualbox") then provider = "virtualbox"
-		#add an elsif case for any other provider you would like to have. And follow it up with a provider specific config code. 
-		end
+provider = "virtualbox" 
+
+ARGV.index do |s|
+	if s.include?("aws")
+		provider = "aws"
+		puts provider + "1"
+		break
+	elsif s.include?("virtualbox")
+		provider = "virtualbox"
+		puts provider + "2"
+		break
+#	elsif s.include?("anotherprovider")
+#		provider = "anotherprovider"
+#		break
+#	else
+#		provider = "virtualbox"
+#		puts provider + "3"
+	end
 end
-					
-if provider == "aws"
+
+puts provider + "4"
+
+case provider
+when "aws"
 	Vagrant.require_plugin 'vagrant-aws'
 	config.vm.synced_folder '.', '/vagrant', :disabled => true
 	config.vm.box = "dummy"
 	config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
 
 # Provider
+	config.vm.define "awsbox" do |aws|
+	end
 	config.vm.provider :aws do |aws, override|
 	aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']    
 	aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY'] 
@@ -37,24 +46,24 @@ if provider == "aws"
 	override.ssh.username = "ubuntu"
 	override.ssh.private_key_path = "./testkep.pem"
 	end
-config.vm.provision(
-:shell,
-:inline => "cd /tmp/;mkdir vagrant-script;\
-	cd vagrant-script;\
-	wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/install.sh -O install.sh;\
-	wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/tessera.sh -O tessera.sh;\
-	chmod +x install.sh;\
-	chmod +x tessera.sh;\
-	./install.sh;\
-	./tessera.sh;\
-	sudo shutdown now -r;"
-)
-	config.vm.post_up_message="Tessera virtual machine has been provisioned...
-	use 'vagrant ssh' to connect to the machine. To	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following
-	'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'to access HTTP, RStudio, etc. 
-	Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop Namenode open port 50070."
+	config.vm.provision(
+	:shell,
+	:inline => "cd /tmp/;mkdir vagrant-script;\
+			cd vagrant-script;\
+			wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/install.sh -O install.sh;\
+			wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/tessera.sh -O tessera.sh;\
+			chmod +x install.sh;\
+			chmod +x tessera.sh;\
+			./install.sh;\
+			./tessera.sh;"
+	)
 
-elsif provider == "virtualbox"
+	config.vm.post_up_message="Tessera virtual machine has been provisioned...
+	use 'vagrant ssh awsbox' to connect to the machine. To	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following
+	'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'to access HTTP, RStudio, etc. 
+	Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop Namenode open port 50070. Use the name 'awsbox' for any operations."
+
+when "virtualbox"
 	config.vm.box     = "precise64"
 	config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 	config.vm.network :forwarded_port, guest: 50070, host: 60070  
@@ -64,6 +73,8 @@ elsif provider == "virtualbox"
   	config.vm.network :forwarded_port, guest: 3838, host: 4838
   	config.vm.network :forwarded_port, guest: 8088, host: 9088
   	config.vm.network :forwarded_port, guest: 80, host: 9787
+	config.vm.define "virtualbox" do |vb|
+	end
 	config.vm.provider :virtualbox do |vb|
 		vb.memory = 4096
 		vb.cpus = 2
@@ -93,9 +104,14 @@ elsif provider == "virtualbox"
     		:shell,
     		:inline => "/vagrant/tessera.sh"
   	)
-	config.vm.post_up_message="Tessera virtual machine has been provisioned...
-	use 'vagrant ssh' to connect to the machine. To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant"
-#
-#elsif provider = anotherprovider
+
+ 	config.vm.provision(
+    		:shell,
+    		:inline => "sudo shutdown now -r"
+  	)
+	config.vm.post_up_message="Tessera virtual machine has been provisioned... 
+	use 'vagrant ssh virtualbox' to connect to the machine. To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant. Use the name 'virtualbox' for any operations."
+
+#when provider = anotherprovider
 end
 end
