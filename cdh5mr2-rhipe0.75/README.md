@@ -11,9 +11,10 @@ This directory provides Vagrant installation scripts for a Tessera environment w
 For yet unknown reasons, you need to halt and restart your vagrant VM to get Hadoop to work.  So in addition to your initial `vagrant up`, you need to also do
 
 ```
-vagrant halt
-vagrant up
+vagrant halt virtualbox/awsbox
+vagrant up 
 ```
+Use specific box names for virtbox for virtualbox machines, and awsbox for aws machines. 
 
 ### Hadoop URLs ###
 
@@ -52,7 +53,6 @@ curl -i https://api.github.com/tesseradata/trelliscope
 See the notes above.  Basically, you need to do the following:
 
 ```
-vagrant halt
+vagrant halt virtualbox/awsbox
 vagrant up
 ```
-

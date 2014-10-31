@@ -29,11 +29,18 @@ To provision the environment, simply type the following:
 ````
 vagrant up
 ````
+and 
+````
+vagrant up  | vagrant up --provider=virtualbox | vagrant up --provider=aws
+````
+for virtual box or aws. 
 
 Once the provisioning has completed
 
 * To work from command line: SSH into the machine with `vagrant ssh`
 * To work from RStudio IDE: navigate to `localhost:9787` in your web browser with credentials vagrant:vagrant
+* While using cdh5-mr2-Rhipe0.75, to access all HTTP pages on your AWS machine tunnel your traffic the following way `ssh -D 10009 -i key ubuntu@hostname` or `ssh -D 10009 -i key username@hostname`
+
 
 Unless otherwise noted in the README file for a specific installation, the following Hadoop services are available at the following locations:
 

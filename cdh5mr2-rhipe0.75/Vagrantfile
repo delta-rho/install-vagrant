@@ -3,71 +3,115 @@
 
 Vagrant.configure("2") do |config|
 
-  # Default box IP address
-  # This is the IP address that your host will communicate to the guest
-  # through. Change if you're already on the `192.168.33.x` subnet.
-  # private_ip = "192.168.33.15"
+provider = "virtualbox" 
 
-  # Enable agent forwarding on vagrant ssh commands. This allows you to use
-  # identities established on the host machine inside the guest. See the manual
-  # for `ssh-add`
-  # config.ssh.forward_agent = true
-  # config.ssh.forward_x11   = true
+ARGV.index do |s|
+	if s.include?("aws")
+		provider = "aws"
+#		puts provider + "1"
+		break
+	elsif s.include?("virtualbox")
+		provider = "virtualbox"
+#		puts provider + "2"
+		break
+#	elsif s.include?("anotherprovider")
+#		provider = "anotherprovider"
+#		break
+#	else
+#		provider = "virtualbox"
+#		puts provider + "3"
+	end
+end
 
-  # Default Ubuntu Server 12.04 box -- once downloaded, Vagrant will use the cached version
-  config.vm.box     = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+#puts provider + "4"
 
-  # config.vm.hostname = "tessera-hadoop-mr2"
+case provider
+when "aws"
+	Vagrant.require_plugin 'vagrant-aws'
+	config.vm.synced_folder '.', '/vagrant', :disabled => true
+	config.vm.box = "dummy"
+	config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network(:private_network, :ip => private_ip)
-  
-  config.vm.network :forwarded_port, guest: 50070, host: 60070  
-  config.vm.network :forwarded_port, guest: 50075, host: 60075  
-  config.vm.network :forwarded_port, guest: 50030, host: 60030
-  config.vm.network :forwarded_port, guest: 50060, host: 60060
-  # config.vm.network :forwarded_port, guest: 8787, host: 9787
-  config.vm.network :forwarded_port, guest: 3838, host: 4838
-  config.vm.network :forwarded_port, guest: 8088, host: 9088
-  config.vm.network :forwarded_port, guest: 80, host: 9787
+# Provider
+	config.vm.define "awsbox" do |aws|
+	end
+	config.vm.provider :aws do |aws, override|
+	aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']    
+	aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY'] 
+	aws.keypair_name = "testkep"
+	aws.ami = "ami-cc5be9a4" #Ubuntu 12.04 LTS
+	aws.region = "us-east-1"
+	aws.instance_type = "m1.small"
+	aws.security_groups = ["default"]
+	override.ssh.username = "ubuntu"
+	override.ssh.private_key_path = "./testkep.pem"
+	end
+	config.vm.provision(
+	:shell,
+	:inline => "cd /tmp/;mkdir vagrant-script;\
+			cd vagrant-script;\
+			wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/install.sh -O install.sh;\
+			wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/tessera.sh -O tessera.sh;\
+			chmod +x install.sh;\
+			chmod +x tessera.sh;\
+			./install.sh;\
+			./tessera.sh;"
+	)
 
-  config.vm.provider :virtualbox do |vb|
-    # vb.customize(["modifyvm", :id, "--natdnshostresolver1", "off"  ])
-    # vb.customize(["modifyvm", :id, "--natdnsproxy1",        "off"  ])
-    vb.memory = 4096
-    vb.cpus = 2
-  end
+	config.vm.post_up_message="Tessera virtual machine has been provisioned...
+	use 'vagrant ssh awsbox' to connect to the machine. To	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following
+	'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'to access HTTP, RStudio, etc. 
+	Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop Namenode open port 50070. Use the name 'awsbox' for any operations."
 
-  config.vm.synced_folder(".", "/vagrant",
-    :owner => "vagrant",
-    :group => "vagrant",
-    :mount_options => ['dmode=777','fmode=777']
-  )
+when "virtualbox"
+	config.vm.box     = "precise64"
+	config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+	config.vm.network :forwarded_port, guest: 50070, host: 60070  
+	config.vm.network :forwarded_port, guest: 50075, host: 60075  
+ 	config.vm.network :forwarded_port, guest: 50030, host: 60030
+  	config.vm.network :forwarded_port, guest: 50060, host: 60060
+  	config.vm.network :forwarded_port, guest: 3838, host: 4838
+  	config.vm.network :forwarded_port, guest: 8088, host: 9088
+  	config.vm.network :forwarded_port, guest: 80, host: 9787
+	config.vm.define "virtualbox" do |vb|
+	end
+	config.vm.provider :virtualbox do |vb|
+		vb.memory = 4096
+		vb.cpus = 2
+	end
+	config.vm.synced_folder(".", "/vagrant",
+    		:owner => "vagrant",
+    		:group => "vagrant",
+    		:mount_options => ['dmode=777','fmode=777']
+  	)
 
-  current_dir = File.dirname(__FILE__)
+  	current_dir = File.dirname(__FILE__)
 
-  config.vm.provision(
-    :shell,
-    :inline => "chmod +x /vagrant/install.sh"
-  )
-  config.vm.provision(
-    :shell,
-    :inline => "/vagrant/install.sh"
-  )
+  	config.vm.provision(
+    		:shell,
+    		:inline => "chmod +x /vagrant/install.sh"
+  	)
+  	config.vm.provision(
+    		:shell,
+    		:inline => "/vagrant/install.sh"
+  	)
 
-  config.vm.provision(
-    :shell,
-    :inline => "chmod +x /vagrant/tessera.sh"
-  )
-  config.vm.provision(
-    :shell,
-    :inline => "/vagrant/tessera.sh"
-  )
+  	config.vm.provision(
+    		:shell,
+    		:inline => "chmod +x /vagrant/tessera.sh"
+  	)
+ 	config.vm.provision(
+    		:shell,
+    		:inline => "/vagrant/tessera.sh"
+  	)
 
-  config.vm.post_up_message="Tessera virtual machine has been provisioned...
-To work from command line: SSH into the machine with 'vagrant ssh'
-To work from RStudio IDE: navigate to 'localhost:8000' in your web browser with credentials vagrant:vagrant"
+ 	config.vm.provision(
+    		:shell,
+    		:inline => "sudo shutdown now -r"
+  	)
+	config.vm.post_up_message="Tessera virtual machine has been provisioned... 
+	use 'vagrant ssh virtualbox' to connect to the machine. To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant. Use the name 'virtualbox' for any operations."
 
+#when provider = anotherprovider
+end
 end
