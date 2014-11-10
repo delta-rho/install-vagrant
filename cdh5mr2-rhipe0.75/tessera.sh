@@ -26,14 +26,13 @@ echo '/usr/lib/hadoop/lib' | sudo tee -a  /etc/ld.so.conf.d/hadoop.conf
 sudo apt-get -y update
 sudo apt-get -y install pkg-config unzip libcairo2-dev libcurl4-openssl-dev screen libssl0.9.8 gdebi-core firefox
 
-# setup repo
-echo "deb http://cran.rstudio.com/bin/linux/debian squeeze-cran3/" | sudo tee -a /etc/apt/sources.list
-gpg --keyserver pgpkeys.mit.edu --recv-key  06F90DE5381BA480
-gpg -a --export 06F90DE5381BA480 | sudo apt-key add -
+echo "deb http://cran.rstudio.com/bin/linux/ubuntu precise/" | sudo tee -a /etc/apt/sources.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E084DAB9
 
-# install 3.1
-sudo apt-get --yes update
-sudo -E apt-get -t squeeze-cran3 --yes --force-yes install r-base-core=3.1.1-1~squeezecran3.0
+sudo -E apt-get --yes --force-yes update
+
+#### install R
+sudo -E apt-get --yes --force-yes install r-base-dev
 sudo chmod -R aou=rwx  /usr/local/lib/R/site-library
 
 sudo R CMD javareconf
@@ -96,6 +95,8 @@ sudo -E R -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
 sudo -E R -e "options(unzip = 'unzip', repos = 'http://cran.rstudio.com/'); library(devtools); install_github('tesseradata/datadr')"
 ## trelliscope
 sudo -E R -e "options(unzip = 'unzip', repos = 'http://cran.rstudio.com/'); library(devtools); install_github('tesseradata/trelliscope')"
+## testthat
+sudo -E R -e "install.packages('testthat', repos='http://cran.rstudio.com/')"
 
 
 
