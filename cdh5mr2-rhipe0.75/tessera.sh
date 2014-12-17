@@ -14,6 +14,7 @@ eVal 'HADOOP_OPTS=-Djava.awt.headless=true'
 eVal 'HADOOP_LIBS=/etc/hadoop/conf:/usr/lib/hadoop/lib/:/usr/lib/hadoop/.//:/usr/lib/hadoop-hdfs/./:/usr/lib/hadoop-hdfs/lib/:/usr/lib/hadoop-hdfs/.//:/usr/lib/hadoop-yarn/lib/:/usr/lib/hadoop-yarn/.//:/usr/lib/hadoop-mapreduce/lib/:/usr/lib/hadoop-mapreduce/.//'
 eVal 'LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH'
 eVal 'RHIPE_RUNNER=/home/vagrant/rhRunner.sh'
+eVal 'JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64'
 
 sudo chown -R vagrant:vagrant .
 
@@ -39,12 +40,12 @@ sudo R CMD javareconf
 sudo su - -c "R -e \"install.packages('rJava', repos='http://www.rforge.net/')\""
 
 ## shiny package
-sudo -E R -e "install.packages('shiny', repos='http://cran.rstudio.com/')"
+R -e "install.packages('shiny', repos='http://cran.rstudio.com/')"
 
 ## rstudio
 # sudo apt-get -y install libssl0.9.8
-wget http://download2.rstudio.org/rstudio-server-0.98.994-amd64.deb
-sudo dpkg -i rstudio-server-0.98.994-amd64.deb
+wget http://download2.rstudio.org/rstudio-server-0.98.1091-amd64.deb
+sudo dpkg -i rstudio-server-0.98.1091-amd64.deb
 # sudo apt-get -f --force-yes --yes install
 # put rstudio on part 80
 echo "www-port=80" | sudo tee -a /etc/rstudio/rserver.conf
@@ -53,10 +54,9 @@ sudo rstudio-server restart
 
 ## shiny server
 # sudo apt-get install gdebi-core
-wget http://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.2.1.362-amd64.deb
+wget http://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.2.3.368-amd64.deb
 # no auto-yes!
-# sudo gdebi shiny-server-1.2.1.362-amd64.deb
-sudo dpkg -i shiny-server-1.2.1.362-amd64.deb
+sudo dpkg -i shiny-server-1.2.3.368-amd64.deb
 # copy shiny examples
 sudo mkdir /srv/shiny-server/examples
 sudo cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples
@@ -90,13 +90,23 @@ sudo chmod 755 /home/vagrant
 sudo chmod 755 /home/vagrant/rhRunner.sh
 
 ## devtools
-sudo -E R -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
+R -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
 ## datadr
-sudo -E R -e "options(unzip = 'unzip', repos = 'http://cran.rstudio.com/'); library(devtools); install_github('tesseradata/datadr')"
+R -e "options(unzip = 'unzip', repos = 'http://cran.rstudio.com/'); library(devtools); install_github('tesseradata/datadr')"
 ## trelliscope
-sudo -E R -e "options(unzip = 'unzip', repos = 'http://cran.rstudio.com/'); library(devtools); install_github('tesseradata/trelliscope')"
+R -e "options(unzip = 'unzip', repos = 'http://cran.rstudio.com/'); library(devtools); install_github('tesseradata/trelliscope')"
 ## testthat
-sudo -E R -e "install.packages('testthat', repos='http://cran.rstudio.com/')"
+R -e "install.packages('testthat', repos='http://cran.rstudio.com/')"
+## roxygen2
+R -e "install.packages('roxygen2', repos='http://cran.rstudio.com/')"
 
+R -e "install.packages('roxygen2', repos='http://cran.rstudio.com/')"
 
+# components needed to build RHIPE from source
+sudo -E apt-get --yes install git
+sudo -E apt-get --yes install ant
+sudo -E apt-get --yes install maven
+
+# git clone https://github.com/tesseradata/RHIPE
+# git checkout -b dev origin/dev
 
