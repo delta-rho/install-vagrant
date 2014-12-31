@@ -1,0 +1,95 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+provider = "virtualbox" 
+
+ARGV.index do |s|
+  if s.include?("aws")
+    provider = "aws"
+    break
+  elsif s.include?("virtualbox")
+    provider = "virtualbox"
+    break
+# elsif s.include?("anotherprovider")
+#   provider = "anotherprovider"
+#   break
+  end
+end
+
+case provider
+when "aws"
+  Vagrant.require_plugin 'vagrant-aws'
+  config.vm.synced_folder '.', '/vagrant', :disabled => true
+  config.vm.box = "dummy"
+  config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+
+# Provider
+  config.vm.define "awsbox" do |aws|
+  end
+  config.vm.provider :aws do |aws, override|
+  aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']    
+  aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY'] 
+  aws.keypair_name = "testkep"
+  aws.ami = "ami-cc5be9a4" # Ubuntu 12.04 LTS
+  aws.region = "us-east-1"
+  aws.instance_type = "m1.small"
+  aws.security_groups = ["default"]
+  override.ssh.username = "ubuntu"
+  override.ssh.private_key_path = "./testkep.pem"
+  end
+  config.vm.provision(
+  :shell,
+  :inline => "cd /tmp/;mkdir vagrant-script;\
+      cd vagrant-script;\
+      wget https://raw.githubusercontent.com/tesseradata/install-vagrant/master/hadoop2.4-spark1.2-rhipe0.75/install.sh -O install.sh;\
+      chmod +x install.sh;\
+      ./install.sh;"
+  )
+
+  config.vm.post_up_message="Tessera virtual machine has been provisioned...
+  use 'vagrant ssh awsbox' to connect to the machine. To tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following
+  'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'to access HTTP, RStudio, etc. 
+  Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop Namenode open port 50070. Use the name 'awsbox' for any operations."
+
+when "virtualbox"
+  config.vm.box     = "precise64"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.network :forwarded_port, guest: 50070, host: 60070  
+  config.vm.network :forwarded_port, guest: 50075, host: 60075  
+  config.vm.network :forwarded_port, guest: 50030, host: 60030
+  config.vm.network :forwarded_port, guest: 50060, host: 60060
+  config.vm.network :forwarded_port, guest: 19888, host: 29888
+  config.vm.network :forwarded_port, guest: 3838, host: 4838
+  config.vm.network :forwarded_port, guest: 8088, host: 9088
+  config.vm.network :forwarded_port, guest: 80, host: 9787
+  config.vm.network :forwarded_port, guest: 18080, host: 28080
+  config.vm.network :forwarded_port, guest: 18081, host: 28081
+  config.vm.network :forwarded_port, guest: 4040, host: 5040
+  config.vm.network :forwarded_port, guest: 8080, host: 9080
+  config.vm.define "virtualbox" do |vb|
+  end
+  config.vm.provider :virtualbox do |vb|
+    vb.memory = 4096
+    vb.cpus = 2
+  end
+  config.vm.synced_folder(".", "/vagrant",
+    :owner => "vagrant",
+    :group => "vagrant",
+    :mount_options => ['dmode=777','fmode=777']
+  )
+
+  current_dir = File.dirname(__FILE__)
+
+  config.vm.provision "file", source: "conf", destination: "conf"
+
+  config.vm.provision:shell, :inline => "chmod +x /vagrant/install.sh"
+  config.vm.provision :shell, privileged: false, :inline => "/vagrant/install.sh"
+
+  config.vm.post_up_message="Tessera virtual machine has been provisioned... 
+  use 'vagrant ssh virtualbox' to connect to the machine. To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant. Use the name 'virtualbox' for any operations."
+
+#when provider = anotherprovider
+end
+end
