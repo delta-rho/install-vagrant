@@ -50,8 +50,8 @@ when "aws"
 	:shell,
 	:inline => "cd /tmp/;mkdir vagrant-script;\
 			cd vagrant-script;\
-			wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/install.sh -O install.sh;\
-			wget https://raw.githubusercontent.com/ashrith/install-vagrant/aws.specific/aws.cdh5mr2-rhipe0.75/tessera.sh -O tessera.sh;\
+      wget https://raw.githubusercontent.com/tesseradata/install-vagrant/master/cdh5mr2-rhipe0.75/install.sh -O install.sh;\
+      wget https://raw.githubusercontent.com/tesseradata/install-vagrant/master/cdh5mr2-rhipe0.75/tessera.sh -O tessera.sh;\
 			chmod +x install.sh;\
 			chmod +x tessera.sh;\
 			./install.sh;\
@@ -69,10 +69,11 @@ when "virtualbox"
 	config.vm.network :forwarded_port, guest: 50070, host: 60070  
 	config.vm.network :forwarded_port, guest: 50075, host: 60075  
  	config.vm.network :forwarded_port, guest: 50030, host: 60030
-  	config.vm.network :forwarded_port, guest: 50060, host: 60060
-  	config.vm.network :forwarded_port, guest: 3838, host: 4838
-  	config.vm.network :forwarded_port, guest: 8088, host: 9088
-  	config.vm.network :forwarded_port, guest: 80, host: 9787
+  config.vm.network :forwarded_port, guest: 50060, host: 60060
+  config.vm.network :forwarded_port, guest: 3838, host: 4838
+  config.vm.network :forwarded_port, guest: 8088, host: 9088
+  config.vm.network :forwarded_port, guest: 80, host: 9787
+  config.vm.network :forwarded_port, guest: 4040, host: 5040
 	config.vm.define "virtualbox" do |vb|
 	end
 	config.vm.provider :virtualbox do |vb|
@@ -80,35 +81,36 @@ when "virtualbox"
 		vb.cpus = 2
 	end
 	config.vm.synced_folder(".", "/vagrant",
-    		:owner => "vagrant",
-    		:group => "vagrant",
-    		:mount_options => ['dmode=777','fmode=777']
-  	)
+    :owner => "vagrant",
+    :group => "vagrant",
+    :mount_options => ['dmode=777','fmode=777']
+  )
 
-  	current_dir = File.dirname(__FILE__)
+  current_dir = File.dirname(__FILE__)
 
-  	config.vm.provision(
-    		:shell,
-    		:inline => "chmod +x /vagrant/install.sh"
-  	)
-  	config.vm.provision(
-    		:shell,
-    		:inline => "/vagrant/install.sh"
-  	)
+  config.vm.provision(
+    :shell,
+    :inline => "chmod +x /vagrant/install.sh"
+  )
+  config.vm.provision(
+    :shell,
+    :inline => "/vagrant/install.sh"
+  )
 
-  	config.vm.provision(
-    		:shell,
-    		:inline => "chmod +x /vagrant/tessera.sh"
-  	)
+  config.vm.provision(
+    :shell,
+    :inline => "chmod +x /vagrant/tessera.sh"
+  )
  	config.vm.provision(
-    		:shell,
-    		:inline => "/vagrant/tessera.sh"
-  	)
+   	:shell,
+  	:inline => "/vagrant/tessera.sh"
+  )
 
  	config.vm.provision(
-    		:shell,
-    		:inline => "sudo shutdown now -r"
-  	)
+    :shell,
+    :inline => "sudo shutdown now -r"
+  )
+
 	config.vm.post_up_message="Tessera virtual machine has been provisioned... 
 	use 'vagrant ssh virtualbox' to connect to the machine. To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant. Use the name 'virtualbox' for any operations."
 

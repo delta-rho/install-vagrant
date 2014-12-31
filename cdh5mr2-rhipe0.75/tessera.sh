@@ -100,8 +100,6 @@ R -e "install.packages('testthat', repos='http://cran.rstudio.com/')"
 ## roxygen2
 R -e "install.packages('roxygen2', repos='http://cran.rstudio.com/')"
 
-R -e "install.packages('roxygen2', repos='http://cran.rstudio.com/')"
-
 # components needed to build RHIPE from source
 sudo -E apt-get --yes install git
 sudo -E apt-get --yes install ant
