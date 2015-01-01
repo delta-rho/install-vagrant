@@ -150,27 +150,6 @@ sudo chown -R shiny:shiny /srv/shiny-server/examples
 echo "tessera ALL=(ALL) NOPASSWD: /bin/chown -R shiny /srv/shiny-server" | sudo tee -a /etc/sudoers
 
 
-## starting services
-# $HADOOP_HOME/sbin/start-dfs.sh
-# $HADOOP_HOME/sbin/start-yarn.sh
-# export SPARK_HOME=/home/vagrant/hadoop/spark-1.2.0-bin-hadoop2.4
-# $SPARK_HOME/sbin/start-master.sh
-# $SPARK_HOME/sbin/start-slave.sh 1 spark://precise64:7077
-
-## stopping services
-# $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh stop historyserver
-# $HADOOP_HOME/sbin/stop-yarn.sh
-# $HADOOP_HOME/sbin/stop-dfs.sh
-# $SPARK_HOME/sbin/stop-slaves.sh
-# $SPARK_HOME/sbin/stop-master.sh
-
-# http://localhost:9787 - rstudio server
-# http://localhost:4838 - shiny server
-# http://localhost:9088 - hadoop applications
-# http://localhost:60075 - hadoop data node
-# http://localhost:9080 - spark master
-# http://localhost:5040 - spark jobs
-
 ## hadoop test
 # hadoop fs -mkdir input
 # hadoop fs -put $HADOOP_HOME/etc/hadoop/*.xml input

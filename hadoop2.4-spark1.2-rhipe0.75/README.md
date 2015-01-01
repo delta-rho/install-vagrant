@@ -18,6 +18,30 @@ Some ports are forwarded, making some web UIs available:
 * http://localhost:9080: spark master
 * http://localhost:5040: spark jobs
 
+### Starting and Stopping Services ###
+
+Once the machine is provisioned, all services should be running.  For this VM, all services are run by the `vagrant` user.  The services continue to run after bringing up a suspended VM as well.  But you may still find yourself needing to manually start or stop a service.
+
+Starting:
+
+```
+$HADOOP_HOME/sbin/start-dfs.sh
+$HADOOP_HOME/sbin/start-yarn.sh
+export SPARK_HOME=/home/vagrant/hadoop/spark-1.2.0-bin-hadoop2.4
+$SPARK_HOME/sbin/start-master.sh
+$SPARK_HOME/sbin/start-slave.sh 1 spark://precise64:7077
+```
+
+Stopping:
+
+```
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh stop historyserver
+$HADOOP_HOME/sbin/stop-yarn.sh
+$HADOOP_HOME/sbin/stop-dfs.sh
+$SPARK_HOME/sbin/stop-slaves.sh
+$SPARK_HOME/sbin/stop-master.sh
+```
+
 ## Troubleshooting ##
 
 ### (403) Forbidden ###
