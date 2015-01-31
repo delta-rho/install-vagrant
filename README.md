@@ -29,13 +29,17 @@ To provision the environment, simply type the following:
 ````
 vagrant up
 ````
-and 
+or
 ````
-vagrant up  | vagrant up --provider=virtualbox | vagrant up --provider=aws
+vagrant up --provider=virtualbox
 ````
-for virtual box or aws. 
+for virtual box or
+````
+vagrant up --provider=aws
+```
+for aws. 
 
-Once the provisioning has completed
+Once the provisioning has completed:
 
 * To work from command line: SSH into the machine with `vagrant ssh`
 * To work from RStudio IDE: navigate to `localhost:9787` in your web browser with credentials vagrant:vagrant
