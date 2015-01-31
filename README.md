@@ -41,13 +41,12 @@ vagrant up --provider=aws
 Once the provisioning has completed:
 
 * To work from command line: SSH into the machine with `vagrant ssh`
-* To work from RStudio IDE: navigate to `localhost:9787` in your web browser with credentials vagrant:vagrant
+* To work from RStudio IDE: navigate to [localhost:9787](http://localhost:9787) in your web browser with credentials `vagrant:vagrant`
 * While using cdh5-mr2-Rhipe0.75, to access all HTTP pages on your AWS machine tunnel your traffic the following way `ssh -D 10009 -i key ubuntu@hostname` or `ssh -D 10009 -i key username@hostname`
 
 
 Unless otherwise noted in the README file for a specific installation, the following Hadoop services are available at the following locations:
 
-* NameNode: `http://localhost:60070`
-* JobTracker: `http://localhost:60030`
-* TaskTracker: `http://localhost:60060`
-
+* NameNode: [http://localhost:60070](http://localhost:60070)
+* JobTracker: [http://localhost:60030](http://localhost:60030)
+* TaskTracker: [http://localhost:60060](http://localhost:60060)
