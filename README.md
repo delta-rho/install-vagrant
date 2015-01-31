@@ -29,15 +29,14 @@ To provision the environment, simply type the following:
 ````
 vagrant up
 ````
-or
+or, for virtual box:
 ````
 vagrant up --provider=virtualbox
 ````
-for virtual box or
+or, for aws:
 ````
 vagrant up --provider=aws
 ```
-for aws. 
 
 Once the provisioning has completed:
 
