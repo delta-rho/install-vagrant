@@ -16,25 +16,21 @@ sudo -E apt-get --yes --force-yes update
 #### install R
 sudo -E apt-get --yes --force-yes install r-base-dev
 
-#### install rstudio-server
-## http://www.rstudio.com/ide/download/server
-sudo -E apt-get --yes --force-yes install gdebi-core
-sudo -E apt-get --yes --force-yes install libapparmor1
-wget http://download2.rstudio.org/rstudio-server-0.98.977-amd64.deb
-sudo gdebi --n rstudio-server-0.98.977-amd64.deb
+## rstudio server
+wget -q https://s3.amazonaws.com/rstudio-server/current.ver -O currentVersion.txt
+ver=$(cat currentVersion.txt)
+wget http://download2.rstudio.org/rstudio-server-${ver}-amd64.deb
+sudo dpkg -i rstudio-server-${ver}-amd64.deb
+rm rstudio-server-*-amd64.deb currentVersion.txt
+echo "www-port=80" | tee -a /etc/rstudio/rserver.conf
+echo "rsession-ld-library-path=/usr/local/lib" | tee -a /etc/rstudio/rserver.conf
+rstudio-server restart
 
-sudo useradd rstudio
-echo "rstudio:rstudio" | sudo chpasswd
-sudo mkdir /home/rstudio
-sudo chmod -R 0777 /home/rstudio
-
-#### install shiny-server
-## http://www.rstudio.com/shiny/server/install-opensource
-sudo su - -c "R -e \"install.packages('shiny', repos='http://cran.rstudio.com/')\""
-wget http://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.2.0.359-amd64.deb
-sudo gdebi --n shiny-server-1.2.0.359-amd64.deb
-
-## move examples over to server directory
+## shiny server
+ver=$(wget -qO- https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION)
+wget https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-${ver}-amd64.deb -O shiny-server.deb
+sudo dpkg -i shiny-server.deb
+rm shiny-server.deb
 sudo mkdir /srv/shiny-server/examples
 sudo cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples
 sudo chown -R shiny:shiny /srv/shiny-server/examples
@@ -64,8 +60,8 @@ cd ..
 sudo su - -c "R -e \"install.packages('testthat', repos='http://cran.rstudio.com/')\""
 
 #### install Rhipe
-wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.74.0.tar.gz
-sudo R CMD INSTALL Rhipe_0.74.0.tar.gz
+wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.74.1_cdh4.tar.gz
+sudo R CMD INSTALL Rhipe_0.74.1_cdh4.tar.gz
 
 sudo su - -c "R -e \"install.packages('MASS', repos='http://cran.rstudio.com/')\""
 sudo su - -c "R -e \"install.packages('ggplot2', repos='http://cran.rstudio.com/')\""
@@ -120,7 +116,7 @@ sudo -E -u hdfs hadoop fs -chown -R mapred /var/lib/hadoop-hdfs/cache/mapred
 
 sudo -E -u hdfs hadoop fs -ls -R /
 
-sudo -E -u hdfs hadoop fs -mkdir /user/hdfs 
+sudo -E -u hdfs hadoop fs -mkdir /user/hdfs
 sudo -E -u hdfs hadoop fs -chown hdfs /user/hdfs
 
 sudo -u hdfs hadoop fs -mkdir -p /user/vagrant

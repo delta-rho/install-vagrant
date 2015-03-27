@@ -58,7 +58,7 @@ $HADOOP_HOME/sbin/start-dfs.sh
 # http://localhost:60070/
 
 hadoop fs -mkdir -p /tmp/hadoop-yarn/staging/history/done_intermediate
-hadoop fs -chmod -R 1777 /tmp 
+hadoop fs -chmod -R 1777 /tmp
 hadoop fs -mkdir -p /var/log/hadoop-yarn
 hadoop fs -mkdir -p /user/vagrant
 hadoop fs -chown vagrant:vagrant /user/vagrant
@@ -91,8 +91,8 @@ cd ..
 
 ## RHIPE
 export PKG_CONFIG_PATH=/usr/local/lib
-wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.1_hadoop-2.tar.gz
-R CMD INSTALL Rhipe_0.75.1_hadoop-2.tar.gz
+wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.1.2_hadoop-2.tar.gz
+R CMD INSTALL Rhipe_0.75.1.2_hadoop-2.tar.gz
 
 echo "export LD_LIBRARY_PATH=/usr/local/lib" | tee -a /home/vagrant/rhRunner.sh
 echo "exec /usr/bin/R CMD /usr/local/lib/R/site-library/Rhipe/bin/RhipeMapReduce --slave --silent --vanilla" | tee -a /home/vagrant/rhRunner.sh

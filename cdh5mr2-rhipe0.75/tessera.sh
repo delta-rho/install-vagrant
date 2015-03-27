@@ -42,22 +42,21 @@ sudo su - -c "R -e \"install.packages('rJava', repos='http://www.rforge.net/')\"
 ## shiny package
 R -e "install.packages('shiny', repos='http://cran.rstudio.com/')"
 
-## rstudio
-# sudo apt-get -y install libssl0.9.8
-wget http://download2.rstudio.org/rstudio-server-0.98.1091-amd64.deb
-sudo dpkg -i rstudio-server-0.98.1091-amd64.deb
-# sudo apt-get -f --force-yes --yes install
-# put rstudio on part 80
-echo "www-port=80" | sudo tee -a /etc/rstudio/rserver.conf
-echo "rsession-ld-library-path=/usr/local/lib" | sudo tee -a /etc/rstudio/rserver.conf
-sudo rstudio-server restart
+## rstudio server
+wget -q https://s3.amazonaws.com/rstudio-server/current.ver -O currentVersion.txt
+ver=$(cat currentVersion.txt)
+wget http://download2.rstudio.org/rstudio-server-${ver}-amd64.deb
+sudo dpkg -i rstudio-server-${ver}-amd64.deb
+rm rstudio-server-*-amd64.deb currentVersion.txt
+echo "www-port=80" | tee -a /etc/rstudio/rserver.conf
+echo "rsession-ld-library-path=/usr/local/lib" | tee -a /etc/rstudio/rserver.conf
+rstudio-server restart
 
 ## shiny server
-# sudo apt-get install gdebi-core
-wget http://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.2.3.368-amd64.deb
-# no auto-yes!
-sudo dpkg -i shiny-server-1.2.3.368-amd64.deb
-# copy shiny examples
+ver=$(wget -qO- https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/VERSION)
+wget https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubuntu-12.04/x86_64/shiny-server-${ver}-amd64.deb -O shiny-server.deb
+sudo dpkg -i shiny-server.deb
+rm shiny-server.deb
 sudo mkdir /srv/shiny-server/examples
 sudo cp -R /usr/local/lib/R/site-library/shiny/examples/* /srv/shiny-server/examples
 sudo chown -R shiny:shiny /srv/shiny-server/examples
@@ -78,8 +77,8 @@ cd ..
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=/usr/local/lib
 sudo chmod 777 /usr/local/lib/R/site-library
-wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.0_cdh5mr2.tar.gz
-R CMD INSTALL Rhipe_0.75.0_cdh5mr2.tar.gz
+wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.1.2_hadoop-2.tar.gz
+R CMD INSTALL Rhipe_0.75.1.2_hadoop-2.tar.gz
 
 ## RHIPE runner
 echo "export LD_LIBRARY_PATH=/usr/local/lib" | sudo tee -a /home/vagrant/rhRunner.sh
