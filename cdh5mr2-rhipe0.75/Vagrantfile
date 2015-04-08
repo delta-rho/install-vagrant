@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
 
-provider = "virtualbox" 
+provider = "virtualbox"
 
 ARGV.index do |s|
 	if s.include?("aws")
@@ -36,8 +36,8 @@ when "aws"
 	config.vm.define "awsbox" do |aws|
 	end
 	config.vm.provider :aws do |aws, override|
-	aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']    
-	aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY'] 
+	aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']
+	aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
 	aws.keypair_name = "testkep"
 	aws.ami = "ami-cc5be9a4" #Ubuntu 12.04 LTS
 	aws.region = "us-east-1"
@@ -60,18 +60,19 @@ when "aws"
 
 	config.vm.post_up_message="Tessera virtual machine has been provisioned...
 	use 'vagrant ssh awsbox' to connect to the machine. To	tunnel http traffic, configure your browser to look for 10009 as SOCKS port, and ssh using the following
-	'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'to access HTTP, RStudio, etc. 
+	'ssh -D 10009 -i key ubuntu@hostname' or 'ssh -D 10009 -i key username@hostname'to access HTTP, RStudio, etc.
 	Or using Amazon Security group open up the specific port needed for access. For example, to look for hadoop Namenode open port 50070. Use the name 'awsbox' for any operations."
 
 when "virtualbox"
 	config.vm.box     = "precise64"
 	config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-	config.vm.network :forwarded_port, guest: 50070, host: 60070  
-	config.vm.network :forwarded_port, guest: 50075, host: 60075  
+	config.vm.network :forwarded_port, guest: 50070, host: 60070
+	config.vm.network :forwarded_port, guest: 50075, host: 60075
  	config.vm.network :forwarded_port, guest: 50030, host: 60030
   config.vm.network :forwarded_port, guest: 50060, host: 60060
   config.vm.network :forwarded_port, guest: 3838, host: 4838
   config.vm.network :forwarded_port, guest: 8088, host: 9088
+  config.vm.network :forwarded_port, guest: 8100, host: 9100
   config.vm.network :forwarded_port, guest: 80, host: 9787
   config.vm.network :forwarded_port, guest: 4040, host: 5040
 	config.vm.define "virtualbox" do |vb|
@@ -111,7 +112,7 @@ when "virtualbox"
     :inline => "sudo shutdown now -r"
   )
 
-	config.vm.post_up_message="Tessera virtual machine has been provisioned... 
+	config.vm.post_up_message="Tessera virtual machine has been provisioned...
 	use 'vagrant ssh virtualbox' to connect to the machine. To work from RStudio IDE: navigate to 'localhost:9787' in your web browser with credentials vagrant:vagrant. Use the name 'virtualbox' for any operations."
 
 #when provider = anotherprovider
