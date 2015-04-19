@@ -77,8 +77,8 @@ cd ..
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=/usr/local/lib
 sudo chmod 777 /usr/local/lib/R/site-library
-wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.1.3_hadoop-2.tar.gz
-R CMD INSTALL Rhipe_0.75.1.3_hadoop-2.tar.gz
+wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.1.4_hadoop-2.tar.gz
+R CMD INSTALL Rhipe_0.75.1.4_hadoop-2.tar.gz
 
 ## RHIPE runner
 echo "export LD_LIBRARY_PATH=/usr/local/lib" | sudo tee -a /home/vagrant/rhRunner.sh
