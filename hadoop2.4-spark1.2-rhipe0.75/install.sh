@@ -90,9 +90,11 @@ sudo make install
 cd ..
 
 ## RHIPE
+ver=$(wget -qO- http://ml.stat.purdue.edu/rhipebin/current.ver)
+export RHIPE_VERSION=${ver}_hadoop-2
 export PKG_CONFIG_PATH=/usr/local/lib
-wget http://ml.stat.purdue.edu/rhipebin/Rhipe_0.75.1.4_hadoop-2.tar.gz
-R CMD INSTALL Rhipe_0.75.1.4_hadoop-2.tar.gz
+wget http://ml.stat.purdue.edu/rhipebin/Rhipe_$RHIPE_VERSION.tar.gz
+R CMD INSTALL Rhipe_$RHIPE_VERSION.tar.gz
 
 echo "export LD_LIBRARY_PATH=/usr/local/lib" | tee -a /home/vagrant/rhRunner.sh
 echo "exec /usr/bin/R CMD /usr/local/lib/R/site-library/Rhipe/bin/RhipeMapReduce --slave --silent --vanilla" | tee -a /home/vagrant/rhRunner.sh
